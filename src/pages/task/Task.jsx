@@ -162,7 +162,7 @@ const Task = () => {
                         resetForm();
                         setShowModal(true);
                     }}
-                    className="bg-(--primary-color) cursor-pointer text-white px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition shadow-lg">
+                    className="bg-(--primary-color) cursor-pointer text-blue-300 px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition shadow-lg">
                     + Add New Task
                 </button>
             </div>
@@ -234,7 +234,7 @@ const Task = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-(--card-color) text-(--text-color) p-6 rounded-2xl w-full max-w-md space-y-4 shadow-xl">
+                    <div className="bg-(--card-color) p-6 rounded-2xl w-full max-w-md space-y-4 shadow-xl">
 
                         <h3 className="text-lg font-semibold">
                             {editingTask ? "Edit Task" : "Add New Task"}
@@ -246,7 +246,7 @@ const Task = () => {
                             placeholder="Task Title"
                             value={formData.title}
                             onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
+                            className="text-(--primary-color) w-full border rounded-lg p-2"
                         />
 
                         <input
@@ -254,14 +254,14 @@ const Task = () => {
                             name="date"
                             value={formData.date}
                             onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
+                            className="text-(--primary-color) w-full border rounded-lg p-2"
                         />
 
                         <select
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
-                            className="w-full border rounded-lg p-2">
+                            className="text-(--primary-color) w-full border rounded-lg p-2 bg-(--active-color)">
                             <option>Pending</option>
                             <option>In Progress</option>
                             <option>Completed</option>
@@ -271,7 +271,7 @@ const Task = () => {
                             name="priority"
                             value={formData.priority}
                             onChange={handleChange}
-                            className="w-full border rounded-lg p-2">
+                            className="text-(--primary-color) w-full border rounded-lg p-2 bg-(--active-color)">
                             <option>Low</option>
                             <option>Medium</option>
                             <option>High</option>
