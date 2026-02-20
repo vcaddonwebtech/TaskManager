@@ -162,7 +162,7 @@ const Task = () => {
                         resetForm();
                         setShowModal(true);
                     }}
-                    className="bg-(--primary-color) cursor-pointer text-blue-300 px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition shadow-lg">
+                    className="bg-(--primary-color) cursor-pointer text-white px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition shadow-lg">
                     + Add New Task
                 </button>
             </div>
