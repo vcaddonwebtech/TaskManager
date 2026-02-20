@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* ========== Light Mode (Default) ========== */
+:root {
+  --primary-color: #0d8de2;
+  --card-color: #f9fafb;     /* light gray */
+  --bg-color: #ffffff;       /* white background */
+  --text-color: #111827;     /* dark text */
+  --active-color:#EBF5FE
+}
+
+/* ========== Dark Mode ========== */
+.dark {
+  --primary-color: #3b82f6;  /* lighter blue for dark */
+  --card-color: #1f2937;     /* dark card */
+  --bg-color: #111827;       /* dark background */
+  --text-color: #f9fafb;
+  --active-color:#1f2937;     /* light text */
+}
+
