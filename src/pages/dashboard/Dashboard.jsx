@@ -4,19 +4,28 @@ import {
     FolderKanban,
     Users
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "../auth/supabase_client";
 
 const Dashboard = () => {
+       const [dashboardInfo, setDashboardInfo] = useState({
+            tasksCompleted: 0,
+            tasksPending: 0,
+            activeProjects: 0,
+            teamMembers: 0,
+    });
+
 
     const stats = [
         {
             title: "Completed Tasks",
-            value: 28,
+            value: dashboardInfo.tasksCompleted,
             icon: CheckCircle,
             gradient: "--card-color",
         },
         {
             title: "Pending Tasks",
-            value: 6,
+            value: dashboardInfo.tasksPending,
             icon: Clock,
             gradient: "--card-color",
         },
@@ -33,6 +42,26 @@ const Dashboard = () => {
             gradient: "--card-color",
         },
     ];
+
+ 
+    const dashboardData = async()=>{
+        // Fetch or calculate dashboard data here
+        const { data, error } = await supabase
+            .rpc("get_task_status_counts")
+            console.log("Dashboard data: ", data);
+            const newdata = data[0]
+            if (!error) {
+                setDashboardInfo({
+                    tasksCompleted: newdata.completed,
+                    tasksPending: newdata.pending,
+                });
+            }
+    };
+
+    useEffect(() => {
+        dashboardData();
+        console.log("Dashboard data fetched: ");
+    },[])
 
     return (
         <div className="space-y-6">

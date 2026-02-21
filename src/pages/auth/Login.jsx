@@ -1,3 +1,4 @@
+// Login.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -14,22 +15,21 @@ export default function Login() {
         password: "",
     });
 
-    const handleLogin = async(e) => {
-        e.preventDefault();
+   const handleLogin = async (e) => {
+    e.preventDefault();
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        // if (user?.email === form.email && user?.password === form.password)
-        const { error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
-        if (error) {
-            // if (remember) {
-            //     localStorage.setItem("rememberedUser", JSON.stringify(form));
-            // }
-            alert("Login Successfull")
-            navigate("/dashboard");
-        } else {
-            alert("Invalid Credentials");
-        }
-    };
+    const { error } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+    });
+
+    if (error) {
+        alert("Invalid email or password");
+        return;
+    }
+
+    navigate("/dashboard");
+};
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">

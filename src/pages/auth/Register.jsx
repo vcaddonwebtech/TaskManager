@@ -17,27 +17,51 @@ export default function Register() {
     });
 
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    // SIGN UP LOGIC (copied from Auth.jsx and adapted here)
     const handleSignup = async (e) => {
         e.preventDefault();
+
+        setMessage("");
 
         if (form.password !== form.confirmPassword) {
             setMessage("Passwords do not match");
             return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        if (form.password.length < 6) {
+            setMessage("Password must be at least 6 characters");
+            return;
+        }
+
+        setLoading(true);
+
+        const { data, error } = await supabase.auth.signUp({
             email: form.email,
             password: form.password,
+
+            // THIS IS IMPORTANT — saves name
+            options: {
+                data: {
+                    name: form.name,
+                },
+            },
         });
 
+        setLoading(false);
+
         if (error) {
-            console.log("Error signing up", error);
-            setMessage("Registration Failed: " + error.message);
+            setMessage(error.message);
+            return;
+        }
+
+        // If email confirmation enabled
+        if (!data.session) {
+            alert("Check your email to confirm registration.");
+            navigate("/");
         } else {
-            alert("Mail Sent. Please check your email to confirm registration.");
-            navigate("/"); // redirect to login
+            // If email confirmation disabled → auto login
+            navigate("/dashboard");
         }
     };
 
@@ -61,6 +85,7 @@ export default function Register() {
                         <input
                             type="text"
                             required
+                            value={form.name}
                             placeholder="Enter your full name"
                             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500 outline-none"
                             onChange={(e) =>
@@ -75,6 +100,7 @@ export default function Register() {
                         <input
                             type="email"
                             required
+                            value={form.email}
                             placeholder="Enter your email"
                             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500 outline-none"
                             onChange={(e) =>
@@ -89,6 +115,7 @@ export default function Register() {
                         <input
                             type={showPassword ? "text" : "password"}
                             required
+                            value={form.password}
                             placeholder="Create password"
                             className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500 outline-none"
                             onChange={(e) =>
@@ -111,6 +138,7 @@ export default function Register() {
                         <input
                             type={showConfirm ? "text" : "password"}
                             required
+                            value={form.confirmPassword}
                             placeholder="Confirm password"
                             className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg focus:ring-1 focus:ring-purple-500 outline-none"
                             onChange={(e) =>
@@ -127,21 +155,22 @@ export default function Register() {
                         </button>
                     </div>
 
-                    {/* Error / Success Message */}
+                    {/* Message */}
                     {message && (
                         <p className="text-red-500 text-sm text-center">{message}</p>
                     )}
 
-                    {/* Register Button */}
+                    {/* Button */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className="w-full py-2.5 rounded-lg font-semibold text-white 
-                        bg-[var(--primary-color)] hover:opacity-90 transition"
+                        bg-[var(--primary-color)] hover:opacity-90 transition disabled:opacity-50"
                     >
-                        Register
+                        {loading ? "Creating account..." : "Register"}
                     </button>
 
-                    {/* Login Link */}
+                    {/* Login */}
                     <p className="text-center text-sm text-gray-500 mt-4">
                         Already have an account?{" "}
                         <Link

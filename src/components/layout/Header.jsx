@@ -1,7 +1,7 @@
 import { Menu, Bell, Sun, Moon, User, LogOut } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { supabase } from "../../pages/auth/supabase_client";
 
 export default function Header({ toggleSidebar }) {
     const navigate = useNavigate();
@@ -24,10 +24,12 @@ export default function Header({ toggleSidebar }) {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("rememberedUser");
+    const handleLogout = async() => {
+        // localStorage.removeItem("rememberedUser");
+        await supabase.auth.signOut();
         navigate("/");
     };
+ 
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -128,4 +130,5 @@ export default function Header({ toggleSidebar }) {
             </div>
         </header>
     );
+    console.log("Header rendered");
 }
