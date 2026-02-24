@@ -236,7 +236,7 @@ const Task = () => {
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-(--card-color) p-6 rounded-2xl w-full max-w-md space-y-4 shadow-xl">
 
-                        <h3 className="text-lg font-semibold">
+                        <h3 className="text-lg font-semibold text-(--primary-color)">
                             {editingTask ? "Edit Task" : "Add New Task"}
                         </h3>
 
@@ -254,7 +254,7 @@ const Task = () => {
                             name="date"
                             value={formData.date}
                             onChange={handleChange}
-                            className="text-(--primary-color) w-full border rounded-lg p-2"
+                            className="text-(--primary-color) w-full border rounded-lg p-2 "
                         />
 
                         <select
@@ -283,7 +283,7 @@ const Task = () => {
                                     setShowModal(false);
                                     resetForm();
                                 }}
-                                className="px-4 py-2 cursor-pointer rounded-lg border">
+                                className="px-4 py-2 cursor-pointer rounded-lg border bg-red-500 text-white">
                                 Cancel
                             </button>
 
