@@ -1,34 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckSquare, Calendar, AlertCircle, Trash2, Edit } from 'lucide-react';
 import { supabase } from '../auth/supabase_client';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, deleteTask, showTask, updateTask } from '../../features/taskSlice';
 const Task = () => {
-
-    // const [tasks, setTasks] = useState(() => {
-    //     const storedTasks = localStorage.getItem("tasks");
-    //     return storedTasks ? JSON.parse(storedTasks) : [];
-    // });
-    const [tasks, setTasks] = useState([])
-
+    const tasks = useSelector(state => state.taskdata.tasks)
+    const dispatch = useDispatch()
     const [showModal, setShowModal] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
+    console.log("Task" ,tasks) 
+    //     useEffect(() => {
+    //     if (!localStorage.getItem("device_id")) {
+    //         localStorage.setItem("device_id", crypto.randomUUID());
+    //     }
+    // }, []);
+    const getDeviceId = () => {
+        let id = localStorage.getItem("device_id");
+        if (!id) {
+            id = crypto.randomUUID()
+            localStorage.setItem("device_id", id);
+        }
+        return id;
+    }
+
 
     const [formData, setFormData] = useState({
         title: '',
         date: '',
         status: 'Pending',
-        priority: 'Low'
+        priority: 'Low',
+        deviceId: getDeviceId()
     });
-
-    // useEffect(() => {
-    //     localStorage.setItem("tasks", JSON.stringify(tasks));
-    // }, [tasks]);
 
     const resetForm = () => {
         setFormData({
             title: '',
             date: '',
             status: 'Pending',
-            priority: 'Low'
+            priority: 'Low',
+            deviceId: getDeviceId()
+
         });
         setEditingTask(null);
     };
@@ -59,11 +70,7 @@ const Task = () => {
         if (!formData.title || !formData.date) return;
 
         if (editingTask) {
-            // setTasks(tasks.map(task =>
-            //     task.id === editingTask.id
-            //         ? { ...formData, id: editingTask.id }
-            //         : task
-            // ));
+
             const { data, error } = await supabase.from('taskTable')
                 .update(formData)
                 .eq("id", editingTask.id)
@@ -76,6 +83,10 @@ const Task = () => {
                 .select()
                 .single();
             console.log(data, error);
+            if(!error){
+                dispatch(addTask(data))
+                console.log("data" , data)
+            }
         }
 
         resetForm();
@@ -90,10 +101,10 @@ const Task = () => {
         setShowModal(true);
     };
 
-    const handleDelete = async(id) => {
-        // setTasks(tasks.filter(task => task.id !== id));
-        const {data, error} = await supabase.from('taskTable').delete().eq("id",id)
-        
+    const handleDelete = async (id) => {
+
+        const { data, error } = await supabase.from('taskTable').delete().eq("id", id)
+
     };
 
     useEffect(() => {
@@ -103,26 +114,27 @@ const Task = () => {
                 { event: "*", schema: 'public', table: 'taskTable' },
                 (payload) => {
                     const { eventType, new: newTask, old } = payload;
+                    if (localStorage.getItem("device_id") !== newTask.deviceId) {
 
-                    setTasks((prev) => {
-                        if (eventType === "INSERT") {
-                            return [...prev, newTask];
+
+                        console.log("channelData : ", newTask)
+
+                        {
+                            if (eventType === "INSERT") {
+                                return dispatch(addTask(newTask));
+                            }
+
+                            if (eventType === "UPDATE") {
+                                return dispatch(updateTask(newTask));
+                            }
+
+                            if (eventType === "DELETE") {
+                                return dispatch(deleteTask(old.id))
+                            }
                         }
 
-                        if (eventType === "UPDATE") {
-                            return prev.map(task =>
-                                task.id === newTask.id ? newTask : task
-                            );
-                        }
-
-                        if (eventType === "DELETE") {
-                            return prev.filter(task =>
-                                task.id !== old.id
-                            );
-                        }
-
-                        return prev;
-                    });
+                        return newTask;
+                    };
                 }
             )
             .subscribe()
@@ -136,9 +148,9 @@ const Task = () => {
             const { data, error } = await supabase
                 .from("taskTable")
                 .select("*")
-
+            console.log("Loading Fetch ", data)
             if (!error) {
-                setTasks(data)
+                dispatch(showTask(data))
             }
         }
 
