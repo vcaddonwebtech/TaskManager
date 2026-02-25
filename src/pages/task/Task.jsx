@@ -1,3 +1,4 @@
+commit =25.02.2026
 import { useEffect, useState } from 'react';
 import { CheckSquare, Calendar, AlertCircle, Trash2, Edit } from 'lucide-react';
 import { supabase } from '../auth/supabase_client';
