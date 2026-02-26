@@ -44,6 +44,7 @@ export default function Register() {
             options: {
                 data: {
                     name: form.name,
+                    redirectTo: 'https://vite-react-taskmanger.vercel.app/',
                 },
             },
         });
