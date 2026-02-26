@@ -17,7 +17,8 @@ const tasklSlice = createSlice({
             ));
         },
         deleteTask :(state ,action)=>{
-            state.tasks.filter(items=>items.id!=action.payload)
+          state.tasks = state.tasks.filter(items=>items.id!=action.payload);
+            console.log("After Deletation : " , state.tasks)
         },
     }
 })
