@@ -5,23 +5,35 @@ import { supabase } from "../../pages/auth/supabase_client";
 
 export default function Header({ toggleSidebar }) {
     const navigate = useNavigate();
-    const [darkMode, setDarkMode] = useState(false);
+    // const [darkMode, setDarkMode] = useState(false);
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef();
     const [user, setUser] = useState({})
+    const [darkMode, setDarkMode] = useState(() =>{
+            const savedTheme = localStorage.getItem("theme");
+            return savedTheme == "dark";
+    });
 
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem("user")))
-    }, [])
-
-    const handleThemeToggle = () => {
-        setDarkMode(!darkMode);
-
-        if (!darkMode) {
+         if (!darkMode) {
             document.documentElement.classList.add("dark");
         } else {
             document.documentElement.classList.remove("dark");
         }
+
+    }, [darkMode])
+
+    const handleThemeToggle = () => {
+        setDarkMode(
+            (prev)=>{
+              const newTheme = !prev;
+                localStorage.setItem("theme" , newTheme ? "dark":"light")
+                return newTheme
+            }
+        );
+
+       
     };
 
     const handleLogout = async() => {
