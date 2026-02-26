@@ -24,34 +24,8 @@ const Project = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={addtask}>
-
-        <input
-          type="text"
-          placeholder="name"
-          value={form.name}
-          onChange={(e) =>
-            setFormdata({ ...form, name: e.target.value })
-          }
-        />
-
-        <input
-          type="text"
-          placeholder="description"
-          value={form.description}
-          onChange={(e) =>
-            setFormdata({ ...form, description: e.target.value })
-          }
-        />
-
-        <button type="submit">Submit</button>
-      </form>
-
-      {tasks && (tasks.map((items, index) => (
-        <div key={index}>{items.name}</div>
-      )))}
-    </div>
+    <>
+    </>
   );
 }
 
