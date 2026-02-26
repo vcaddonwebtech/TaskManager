@@ -1,20 +1,14 @@
-
 import { useEffect, useState } from 'react';
 import { CheckSquare, Calendar, AlertCircle, Trash2, Edit } from 'lucide-react';
 import { supabase } from '../auth/supabase_client';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, deleteTask, showTask, updateTask } from '../../features/taskSlice';
+
 const Task = () => {
     const tasks = useSelector(state => state.taskdata.tasks)
     const dispatch = useDispatch()
     const [showModal, setShowModal] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
-    console.log("Task" ,tasks) 
-    //     useEffect(() => {
-    //     if (!localStorage.getItem("device_id")) {
-    //         localStorage.setItem("device_id", crypto.randomUUID());
-    //     }
-    // }, []);
     const getDeviceId = () => {
         let id = localStorage.getItem("device_id");
         if (!id) {
@@ -24,10 +18,13 @@ const Task = () => {
         return id;
     }
 
+    const getTodayDate = () => {
+        return new Date().toISOString().split("T")[0];
+    };
 
     const [formData, setFormData] = useState({
         title: '',
-        date: '',
+        date: getTodayDate(),
         status: 'Pending',
         priority: 'Low',
         deviceId: getDeviceId()
@@ -36,7 +33,7 @@ const Task = () => {
     const resetForm = () => {
         setFormData({
             title: '',
-            date: '',
+            date: getTodayDate(),
             status: 'Pending',
             priority: 'Low',
             deviceId: getDeviceId()
@@ -45,6 +42,7 @@ const Task = () => {
         setEditingTask(null);
     };
 
+    // ------------------------------------------------------------------------------------------------
     const getStatusColor = (status) => {
         switch (status) {
             case 'Completed': return 'bg-green-100 text-green-700';
@@ -84,9 +82,9 @@ const Task = () => {
                 .select()
                 .single();
             console.log(data, error);
-            if(!error){
+            if (!error) {
                 dispatch(addTask(data))
-                console.log("data" , data)
+                console.log("data", data)
             }
         }
 
@@ -104,8 +102,11 @@ const Task = () => {
 
     const handleDelete = async (id) => {
 
-        const { data, error } = await supabase.from('taskTable').delete().eq("id", id)
+        const { error } = await supabase.from('taskTable').delete().eq("id", id)
 
+        if (!error) {
+            dispatch(deleteTask(id))
+        }
     };
 
     useEffect(() => {
@@ -122,7 +123,9 @@ const Task = () => {
 
                         {
                             if (eventType === "INSERT") {
+                            
                                 return dispatch(addTask(newTask));
+
                             }
 
                             if (eventType === "UPDATE") {

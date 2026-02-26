@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "./supabase_client";
+import Swal from "sweetalert2"
 
 
 export default function Login() {
@@ -15,21 +16,32 @@ export default function Login() {
         password: "",
     });
 
-   const handleLogin = async (e) => {
-    e.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email: form.email,
-        password: form.password,
-    });
+        const { error } = await supabase.auth.signInWithPassword({
+            email: form.email,
+            password: form.password,
+        });
 
-    if (error) {
-        alert("Invalid email or password");
-        return;
+        if (error)
+            return Swal.fire({
+                position: "top",
+                icon: "error",
+                title: "Invalid Email or Password",
+                timer: 5000
+            });
+
+        Swal.fire({
+            position: "top",
+            icon: "success",
+            title: "Login Successfully",
+            timer: 2000
+        }).then(() => {
+            navigate("/dashboard");
+
+        });
     }
-
-    navigate("/dashboard");
-};
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
